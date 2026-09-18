@@ -1,130 +1,173 @@
 # HR Workforce, Attrition & Cost Analytics
-## Data Quality Assessment & Profiling Report
+## Comprehensive Data Quality Assessment & Profiling Report
 
-This document records the empirical data quality analysis, statistical validation, and integrity checks performed on the dataset (`data/IBM-HR-Analytics-Employee-Attrition-and-Performance-Revised.csv`).
+This document delivers a thorough, empirical data quality assessment of the IBM HR dataset (`data/IBM-HR-Analytics-Employee-Attrition-and-Performance-Revised.csv`). Every finding in this report is supported by verifiable statistical audits conducted directly on the source data.
 
 ---
 
-### 1. Executive Summary & Data Health Scorecard
+### 1. Executive Summary & Quality Scorecard
 
-| Dimension | Assessment | Status | Notes |
+| Quality Dimension | Assessment Result | Status | Key Observation |
 | :--- | :---: | :---: | :--- |
-| **Completeness** | 100.0% | Pass | 0 missing, null, blank, or NaN values across all 1,470 rows and 31 columns. |
-| **Uniqueness** | 100.0% | Pass | 0 duplicate rows detected across all attributes. |
-| **Domain Integrity** | 100.0% | Pass | All numerical values fall within realistic corporate HR ranges. |
-| **Cross-Field Consistency** | 100.0% | Pass | All tenure, promotion, and supervisory logic checks passed with 0 violations. |
-| **Pre-Cleaned Status** | 100.0% | Pass | 4 uninformative benchmark attributes (`EmployeeCount`, `Over18`, `StandardHours`, `EmployeeNumber`) were removed in this revised dataset. |
+| **Completeness** | 100.0% | **Pass** | 0 missing, null, blank, or NaN values across 1,470 rows $\times$ 31 columns (45,570 data points). |
+| **Record Uniqueness** | 100.0% | **Pass** | 0 duplicate records. All 1,470 rows are completely distinct. |
+| **Employee Identifier** | Non-Existent | **Noted** | No explicit `EmployeeID` or `EmployeeNumber` column exists in this revised CSV. |
+| **Profile Distinctness** | 100.0% | **Pass** | Multi-attribute composite test on biographical fields yielded 1,470 unique employee profiles (0 collisions). |
+| **Text Consistency** | 100.0% | **Pass** | 0 leading/trailing whitespace errors; 0 mixed-case discrepancies across all categorical fields. |
+| **Numerical Validity** | 100.0% | **Pass** | 0 negative values; all tenure, promotion, and experience relationships satisfy strict relational logic. |
+| **Statistical Outliers** | Valid Domain Skew | **Documented** | Right-skewed distribution in `MonthlyIncome` (114 high earners) confirmed to be 100% legitimate executive/director roles. |
 
 ---
 
-### 2. Dataset Dimensions & Schema Overview
+### 2. Missing Value & Completeness Audit
 
-- **Row Count**: 1,470 employee records
-- **Column Count**: 31 columns
-- **File Format**: UTF-8 Comma-Separated Values (CSV)
-- **Granularity**: One record per individual employee snapshot
+A row-by-row and column-by-column inspection was conducted across all 31 attributes.
 
----
+| # | Column Name | Raw Data Type | Total Records | Null / Blank Count | Completeness Rate |
+| :-: | :--- | :--- | :-: | :-: | :-: |
+| 1 | `Age` | Integer | 1,470 | 0 | 100.0% |
+| 2 | `Attrition` | String (Categorical) | 1,470 | 0 | 100.0% |
+| 3 | `BusinessTravel` | String (Categorical) | 1,470 | 0 | 100.0% |
+| 4 | `DailyRate` | Integer | 1,470 | 0 | 100.0% |
+| 5 | `Department` | String (Categorical) | 1,470 | 0 | 100.0% |
+| 6 | `DistanceFromHome` | Integer | 1,470 | 0 | 100.0% |
+| 7 | `Education` | String (Ordinal) | 1,470 | 0 | 100.0% |
+| 8 | `EducationField` | String (Categorical) | 1,470 | 0 | 100.0% |
+| 9 | `EnvironmentSatisfaction` | String (Ordinal) | 1,470 | 0 | 100.0% |
+| 10 | `Gender` | String (Categorical) | 1,470 | 0 | 100.0% |
+| 11 | `HourlyRate` | Integer | 1,470 | 0 | 100.0% |
+| 12 | `JobInvolvement` | String (Ordinal) | 1,470 | 0 | 100.0% |
+| 13 | `JobLevel` | String (Ordinal) | 1,470 | 0 | 100.0% |
+| 14 | `JobRole` | String (Categorical) | 1,470 | 0 | 100.0% |
+| 15 | `JobSatisfaction` | String (Ordinal) | 1,470 | 0 | 100.0% |
+| 16 | `MaritalStatus` | String (Categorical) | 1,470 | 0 | 100.0% |
+| 17 | `MonthlyIncome` | Integer | 1,470 | 0 | 100.0% |
+| 18 | `MonthlyRate` | Integer | 1,470 | 0 | 100.0% |
+| 19 | `NumCompaniesWorked` | Integer | 1,470 | 0 | 100.0% |
+| 20 | `OverTime` | String (Categorical) | 1,470 | 0 | 100.0% |
+| 21 | `PercentSalaryHike` | Integer | 1,470 | 0 | 100.0% |
+| 22 | `PerformanceRating` | String (Ordinal) | 1,470 | 0 | 100.0% |
+| 23 | `RelationshipSatisfaction` | String (Ordinal) | 1,470 | 0 | 100.0% |
+| 24 | `StockOptionLevel` | Integer | 1,470 | 0 | 100.0% |
+| 25 | `TotalWorkingYears` | Integer | 1,470 | 0 | 100.0% |
+| 26 | `TrainingTimesLastYear` | Integer | 1,470 | 0 | 100.0% |
+| 27 | `WorkLifeBalance` | String (Ordinal) | 1,470 | 0 | 100.0% |
+| 28 | `YearsAtCompany` | Integer | 1,470 | 0 | 100.0% |
+| 29 | `YearsInCurrentRole` | Integer | 1,470 | 0 | 100.0% |
+| 30 | `YearsSinceLastPromotion` | Integer | 1,470 | 0 | 100.0% |
+| 31 | `YearsWithCurrManager` | Integer | 1,470 | 0 | 100.0% |
 
-### 3. Missing Value & Null Analysis
-
-A comprehensive audit was executed across all 31 fields to detect missing values, whitespace-only entries, null markers (`NA`, `NULL`, `none`), and empty strings.
-
-| Column | Data Type | Record Count | Missing / Null Count | Missing % |
-| :--- | :--- | :-: | :-: | :-: |
-| `Age` | Integer | 1,470 | 0 | 0.0% |
-| `Attrition` | String (Categorical) | 1,470 | 0 | 0.0% |
-| `BusinessTravel` | String (Categorical) | 1,470 | 0 | 0.0% |
-| `DailyRate` | Integer | 1,470 | 0 | 0.0% |
-| `Department` | String (Categorical) | 1,470 | 0 | 0.0% |
-| `DistanceFromHome` | Integer | 1,470 | 0 | 0.0% |
-| `Education` | String (Ordinal) | 1,470 | 0 | 0.0% |
-| `EducationField` | String (Categorical) | 1,470 | 0 | 0.0% |
-| `EnvironmentSatisfaction` | String (Ordinal) | 1,470 | 0 | 0.0% |
-| `Gender` | String (Categorical) | 1,470 | 0 | 0.0% |
-| `HourlyRate` | Integer | 1,470 | 0 | 0.0% |
-| `JobInvolvement` | String (Ordinal) | 1,470 | 0 | 0.0% |
-| `JobLevel` | String (Ordinal) | 1,470 | 0 | 0.0% |
-| `JobRole` | String (Categorical) | 1,470 | 0 | 0.0% |
-| `JobSatisfaction` | String (Ordinal) | 1,470 | 0 | 0.0% |
-| `MaritalStatus` | String (Categorical) | 1,470 | 0 | 0.0% |
-| `MonthlyIncome` | Integer | 1,470 | 0 | 0.0% |
-| `MonthlyRate` | Integer | 1,470 | 0 | 0.0% |
-| `NumCompaniesWorked` | Integer | 1,470 | 0 | 0.0% |
-| `OverTime` | String (Binary) | 1,470 | 0 | 0.0% |
-| `PercentSalaryHike` | Integer | 1,470 | 0 | 0.0% |
-| `PerformanceRating` | String (Ordinal) | 1,470 | 0 | 0.0% |
-| `RelationshipSatisfaction` | String (Ordinal) | 1,470 | 0 | 0.0% |
-| `StockOptionLevel` | Integer | 1,470 | 0 | 0.0% |
-| `TotalWorkingYears` | Integer | 1,470 | 0 | 0.0% |
-| `TrainingTimesLastYear` | Integer | 1,470 | 0 | 0.0% |
-| `WorkLifeBalance` | String (Ordinal) | 1,470 | 0 | 0.0% |
-| `YearsAtCompany` | Integer | 1,470 | 0 | 0.0% |
-| `YearsInCurrentRole` | Integer | 1,470 | 0 | 0.0% |
-| `YearsSinceLastPromotion` | Integer | 1,470 | 0 | 0.0% |
-| `YearsWithCurrManager` | Integer | 1,470 | 0 | 0.0% |
-
-**Conclusion**: The dataset displays 100% completeness with zero missing records. No data imputation is required.
+> [!NOTE]
+> **Audit Conclusion**: With 0 missing values detected, no statistical imputation, default replacement, or row dropping is required.
 
 ---
 
-### 4. Cross-Field Logical Consistency Validation
+### 3. Record & Entity Duplication Audit
 
-To ensure structural plausibility, a suite of relational logic tests was executed:
+#### A. Global Row Duplication
+- An evaluation across the full 31-column vector identified **0 duplicate rows**.
+- Total unique rows: **1,470 / 1,470 (100.0%)**.
 
-| Test Assertion | Condition Evaluated | Violations Found | Result |
-| :--- | :--- | :-: | :---: |
-| **Company Tenure $\le$ Total Experience** | `YearsAtCompany > TotalWorkingYears` | 0 / 1,470 | Pass |
-| **Role Tenure $\le$ Company Tenure** | `YearsInCurrentRole > YearsAtCompany` | 0 / 1,470 | Pass |
-| **Manager Tenure $\le$ Company Tenure** | `YearsWithCurrManager > YearsAtCompany` | 0 / 1,470 | Pass |
-| **Promotion Latency $\le$ Company Tenure** | `YearsSinceLastPromotion > YearsAtCompany` | 0 / 1,470 | Pass |
-| **Age vs. Total Experience Plausibility** | `Age - TotalWorkingYears < 16` | 0 / 1,470 | Pass |
-| **Non-Negative Experience & Financials** | Min values for all tenure & salary fields $\ge 0$ | 0 / 1,470 | Pass |
-
-All cross-field relationship constraints hold with 100% integrity.
-
----
-
-### 5. Categorical Distributions & Cardinality
-
-| Column Name | Cardinality | Observed Distinct Values | Distribution Breakdown |
-| :--- | :-: | :--- | :--- |
-| `Attrition` | 2 | `No`, `Yes` | No: 1,233 (83.9%), Yes: 237 (16.1%) |
-| `Department` | 3 | `Human Resources`, `Research & Development`, `Sales` | R&D: 961 (65.4%), Sales: 446 (30.3%), HR: 63 (4.3%) |
-| `BusinessTravel` | 3 | `Non-Travel`, `Travel_Frequently`, `Travel_Rarely` | Rarely: 1,043 (71.0%), Frequently: 277 (18.8%), Non-Travel: 150 (10.2%) |
-| `Gender` | 2 | `Female`, `Male` | Male: 882 (60.0%), Female: 588 (40.0%) |
-| `MaritalStatus` | 3 | `Divorced`, `Married`, `Single` | Married: 673 (45.8%), Single: 470 (32.0%), Divorced: 327 (22.2%) |
-| `OverTime` | 2 | `No`, `Yes` | No: 1,054 (71.7%), Yes: 416 (28.3%) |
-| `Education` | 5 | `Below College`, `College`, `Bachelor`, `Master`, `Doctor` | Bachelor: 38.9%, Master: 27.1%, College: 19.2%, Below College: 11.6%, Doctor: 3.3% |
-| `EducationField` | 6 | `Life Sciences`, `Medical`, `Marketing`, `Technical Degree`, `Other`, `Human Resources` | Life Sciences: 41.2%, Medical: 31.6%, Marketing: 10.8%, Technical: 9.0%, Other: 5.6%, HR: 1.8% |
-| `JobRole` | 9 | 9 operational functions | Sales Exec (22.2%), Research Scientist (19.9%), Lab Tech (17.6%), Mfg Dir (9.9%), Healthcare Rep (8.9%), Manager (6.9%), Sales Rep (5.6%), Research Dir (5.4%), HR (3.5%) |
-| `JobLevel` | 5 | `Entry Level`, `Junior Level`, `Mid Level`, `Senior Level`, `Executive Level` | Entry: 36.9%, Junior: 36.3%, Mid: 14.8%, Senior: 7.2%, Executive: 4.7% |
-| `EnvironmentSatisfaction` | 4 | `Low`, `Medium`, `High`, `Very High` | High: 30.8%, Very High: 30.3%, Medium: 19.5%, Low: 19.3% |
-| `JobSatisfaction` | 4 | `Low`, `Medium`, `High`, `Very High` | Very High: 31.2%, High: 30.1%, Low: 19.7%, Medium: 19.0% |
-| `RelationshipSatisfaction` | 4 | `Low`, `Medium`, `High`, `Very High` | High: 31.2%, Very High: 29.4%, Medium: 20.6%, Low: 18.8% |
-| `JobInvolvement` | 4 | `Low`, `Medium`, `High`, `Very High` | High: 59.0%, Medium: 25.5%, Very High: 9.8%, Low: 5.6% |
-| `WorkLifeBalance` | 4 | `Bad`, `Good`, `Better`, `Best` | Better: 60.7%, Good: 23.4%, Best: 10.4%, Bad: 5.4% |
-| `PerformanceRating` | 2 | `Excellent`, `Outstanding` | Excellent: 1,244 (84.6%), Outstanding: 226 (15.4%) |
+#### B. Employee Identifier Verification
+- **Explicit Identifier**: No explicit identifier column (`EmployeeNumber` or `EmployeeID`) is present in this revised dataset. In the original raw benchmark, `EmployeeNumber` existed but was removed during initial revision alongside the uninformative constants (`EmployeeCount`, `Over18`, `StandardHours`).
+- **Policy Compliance**: In accordance with the requirement to *not create fake employee IDs*, no synthetic surrogate IDs will be invented in the raw data.
+- **Biographical Composite Uniqueness**: To verify whether multiple records might represent the same employee, a composite key was evaluated across 7 core biographical and career attributes:
+  $$\text{Composite Key} = [\text{Age}, \text{Gender}, \text{Department}, \text{JobRole}, \text{TotalWorkingYears}, \text{MonthlyIncome}, \text{YearsAtCompany}]$$
+  - **Result**: Exactly **1,470 unique combinations** out of 1,470 records.
+  - **Conclusion**: There are no duplicate employee profiles in the dataset.
 
 ---
 
-### 6. Potential Data-Quality Nuances & Modeling Guidelines
+### 4. Categorical Consistency & Text Cleanliness
 
-While the dataset is structurally clean, several domain nuances must be addressed during ETL and Power BI data modeling:
+Every text column was audited for leading/trailing whitespace, unexpected delimiters, casing divergence, and irregular category codes.
 
-1. **Ordinal Sorting Requirement (Critical for Visuals)**:
-   - **Issue**: Categorical ratings (`WorkLifeBalance`, `JobSatisfaction`, `JobLevel`, `Education`) are stored as text strings. By default, Power BI sorts categories alphabetically (e.g., sorting `Bad` $\rightarrow$ `Best` $\rightarrow$ `Better` $\rightarrow$ `Good`, or `Entry Level` $\rightarrow$ `Executive Level`).
-   - **Resolution**: In Power Query / DAX, build an explicit companion sort-key column (or dedicated dimension table) so visual axes order logically:
-     - `WorkLifeBalance`: Bad (1), Good (2), Better (3), Best (4)
-     - `Satisfaction`: Low (1), Medium (2), High (3), Very High (4)
-     - `JobLevel`: Entry Level (1), Junior Level (2), Mid Level (3), Senior Level (4), Executive Level (5)
-     - `Education`: Below College (1), College (2), Bachelor (3), Master (4), Doctor (5)
-2. **Performance Rating Skewness**:
-   - **Issue**: Only 2 values exist in `PerformanceRating` (`Excellent` [equivalent to numeric 3] and `Outstanding` [equivalent to numeric 4]). There are zero records representing lower performance ratings (1 or 2).
-   - **Resolution**: Note this appraisal rating inflation in documentation and avoid claiming underperformance as an attrition driver.
-3. **Imbalanced Attrition Target**:
-   - **Issue**: Turnover represents 16.12% of the dataset (237 positive cases vs. 1,233 negative cases).
-   - **Resolution**: Use normalized percentage metrics (`Attrition Rate %` = `DIVIDE([Departed Employees], [Total Employees], 0)`) rather than raw counts when comparing cohorts across departments or roles.
-4. **String Formatting Consistency**:
-   - **Issue**: The `BusinessTravel` column uses underscores (`Travel_Frequently`, `Travel_Rarely`).
-   - **Resolution**: In Power Query ETL, apply a clean text replacement (`Travel Frequently`, `Travel Rarely`) for clean executive presentation.
+| Column Name | Distinct Values | Case-Insensitive Count | Whitespace Discrepancies | Quality Observations |
+| :--- | :-: | :-: | :-: | :--- |
+| `Attrition` | 2 | 2 | 0 | Clean: `No` (1,233), `Yes` (237) |
+| `BusinessTravel` | 3 | 3 | 0 | Underscores present: `Travel_Frequently` (277), `Travel_Rarely` (1,043), `Non-Travel` (150). Recommended for cosmetic replacement in ETL. |
+| `Department` | 3 | 3 | 0 | Clean: `Human Resources` (63), `Research & Development` (961), `Sales` (446) |
+| `Education` | 5 | 5 | 0 | Clean ordinal text: `Below College`, `College`, `Bachelor`, `Master`, `Doctor` |
+| `EducationField` | 6 | 6 | 0 | Clean: `Human Resources`, `Life Sciences`, `Marketing`, `Medical`, `Other`, `Technical Degree` |
+| `EnvironmentSatisfaction` | 4 | 4 | 0 | Clean ordinal text: `Low`, `Medium`, `High`, `Very High` |
+| `Gender` | 2 | 2 | 0 | Clean: `Female` (588), `Male` (882) |
+| `JobInvolvement` | 4 | 4 | 0 | Clean ordinal text: `Low`, `Medium`, `High`, `Very High` |
+| `JobLevel` | 5 | 5 | 0 | Clean ordinal text: `Entry Level`, `Junior Level`, `Mid Level`, `Senior Level`, `Executive Level` |
+| `JobRole` | 9 | 9 | 0 | Clean: 9 distinct functional roles |
+| `JobSatisfaction` | 4 | 4 | 0 | Clean ordinal text: `Low`, `Medium`, `High`, `Very High` |
+| `MaritalStatus` | 3 | 3 | 0 | Clean: `Divorced`, `Married`, `Single` |
+| `OverTime` | 2 | 2 | 0 | Clean binary text: `No` (1,054), `Yes` (416) |
+| `PerformanceRating` | 2 | 2 | 0 | Only 2 categories present: `Excellent` (1,244), `Outstanding` (226). Ratings 1 and 2 are absent from the dataset. |
+| `RelationshipSatisfaction` | 4 | 4 | 0 | Clean ordinal text: `Low`, `Medium`, `High`, `Very High` |
+| `WorkLifeBalance` | 4 | 4 | 0 | Clean ordinal text: `Bad` (80), `Good` (344), `Better` (893), `Best` (153) |
+
+---
+
+### 5. Numerical Integrity & Logical Cross-Field Validation
+
+#### A. Logical Cross-Field Relational Rules
+To guarantee corporate validity, structural cross-field relationships were audited:
+
+| Logical Rule Evaluated | Business Rationale | Invalidation Criteria | Violations Found | Result |
+| :--- | :--- | :--- | :-: | :---: |
+| **Company Tenure $\le$ Experience** | An employee cannot work at current firm longer than total career. | `YearsAtCompany > TotalWorkingYears` | 0 | **Pass (100%)** |
+| **Role Tenure $\le$ Company Tenure** | Time in current role cannot exceed time at company. | `YearsInCurrentRole > YearsAtCompany` | 0 | **Pass (100%)** |
+| **Manager Tenure $\le$ Company Tenure** | Time with manager cannot exceed time at company. | `YearsWithCurrManager > YearsAtCompany` | 0 | **Pass (100%)** |
+| **Promotion Latency $\le$ Company Tenure** | Time since promotion cannot exceed time at company. | `YearsSinceLastPromotion > YearsAtCompany` | 0 | **Pass (100%)** |
+| **Working Age Plausibility** | Legal working age boundary (assumed min starting age $\ge 16$). | `Age - TotalWorkingYears < 16` | 0 | **Pass (100%)** |
+
+#### B. Audit of Zero Values in Numerical Fields
+Zero values were analyzed to differentiate valid business states from placeholder corruption:
+
+- `YearsSinceLastPromotion = 0` (581 records): **Valid**. Indicates employee received a promotion within the current calendar year (< 12 months ago).
+- `YearsInCurrentRole = 0` (244 records): **Valid**. Indicates a recent internal job transition or newly onboarded hire.
+- `YearsWithCurrManager = 0` (263 records): **Valid**. Indicates a newly assigned manager or recent organizational restructuring.
+- `YearsAtCompany = 0` (44 records): **Valid**. Represents new hires in their first year of employment.
+- `NumCompaniesWorked = 0` (197 records): **Valid**. Indicates the current company is the employee's first employer.
+- `TotalWorkingYears = 0` (11 records): **Valid**. Fresh graduates/interns at the onset of their professional career.
+- `StockOptionLevel = 0` (631 records): **Valid**. Entry/junior roles with no equity participation grant.
+- `TrainingTimesLastYear = 0` (54 records): **Valid**. Employees who attended 0 formal training sessions during the review period.
+
+---
+
+### 6. Statistical Outlier Audit (Interquartile Range - IQR Analysis)
+
+A statistical distribution audit was performed using the standard Tukey IQR method ($[\text{Q1} - 1.5 \times \text{IQR}, \text{Q3} + 1.5 \times \text{IQR}]$) across all 15 numerical variables:
+
+| Column Name | Min | Q1 (25%) | Median | Q3 (75%) | Max | IQR | Lower Bound | Upper Bound | Outlier Count |
+| :--- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| `Age` | 18 | 30.0 | 36.0 | 43.0 | 60 | 13.0 | 10.5 | 62.5 | **0** |
+| `DailyRate` | 102 | 465.0 | 802.0 | 1157.0 | 1,499 | 692.0 | -573.0 | 2,195.0 | **0** |
+| `DistanceFromHome` | 1 | 2.0 | 7.0 | 14.0 | 29 | 12.0 | -16.0 | 32.0 | **0** |
+| `HourlyRate` | 30 | 48.0 | 66.0 | 84.0 | 100 | 36.0 | -6.0 | 138.0 | **0** |
+| `MonthlyIncome` | 1,009 | 2,911.0 | 4,930.0 | 8,380.0 | 19,999 | 5,469.0 | -5,292.5 | 16,583.5 | **114 (High)** |
+| `MonthlyRate` | 2,094 | 8,045.0 | 14,242.0 | 20,462.0 | 26,999 | 12,417.0 | -10,580.5 | 39,087.5 | **0** |
+| `NumCompaniesWorked`| 0 | 1.0 | 2.0 | 4.0 | 9 | 3.0 | -3.5 | 8.5 | **52 (High)** |
+| `PercentSalaryHike` | 11 | 12.0 | 14.0 | 18.0 | 25 | 6.0 | 3.0 | 27.0 | **0** |
+| `StockOptionLevel` | 0 | 0.0 | 1.0 | 1.0 | 3 | 1.0 | -1.5 | 2.5 | **85 (High)** |
+| `TotalWorkingYears` | 0 | 6.0 | 10.0 | 15.0 | 40 | 9.0 | -7.5 | 28.5 | **63 (High)** |
+| `TrainingTimesLastYear`| 0 | 2.0 | 3.0 | 3.0 | 6 | 1.0 | 0.5 | 4.5 | **184 (High)** |
+| `YearsAtCompany` | 0 | 3.0 | 5.0 | 9.0 | 40 | 6.0 | -6.0 | 18.0 | **104 (High)** |
+| `YearsInCurrentRole`| 0 | 2.0 | 3.0 | 7.0 | 18 | 5.0 | -5.5 | 14.5 | **21 (High)** |
+| `YearsSinceLastPromotion`| 0 | 0.0 | 1.0 | 3.0 | 15 | 3.0 | -4.5 | 7.5 | **107 (High)** |
+| `YearsWithCurrManager`| 0 | 2.0 | 3.0 | 7.0 | 17 | 5.0 | -5.5 | 14.5 | **14 (High)** |
+
+#### Deep-Dive: MonthlyIncome Outlier Investigation
+- **Statistical finding**: 114 records exceed the upper IQR threshold of $16,583.50 (ranging from $16,799 to $19,999).
+- **Empirical verification**:
+  - **Job Roles**: 74 are `Manager` and 40 are `Research Director`.
+  - **Job Levels**: 69 are `Executive Level` (Level 5) and 45 are `Senior Level` (Level 4).
+- **Conclusion**: These high earners are not data anomalies or input errors; they accurately model executive compensation bands. **They must be retained in full.**
+
+#### Deep-Dive: Promotion Latency Outliers
+- **Statistical finding**: 107 records exhibit $\ge 8$ years since their last promotion.
+- **Analytical relevance**: This is a direct operational indicator of career stagnation. In our attrition modeling, this cohort represents an important risk group for voluntary departure.
+
+---
+
+### 7. Power Query & ETL Transformation Recommendations
+
+1. **Text Cleanup**: Replace underscores in `BusinessTravel` (`Travel_Frequently` $\rightarrow$ `Travel Frequently`, `Travel_Rarely` $\rightarrow$ `Travel Rarely`).
+2. **Explicit Ordinal Sorting**: Create numerical sort keys (1–5) for `JobLevel`, `Education`, `WorkLifeBalance`, `JobSatisfaction`, `EnvironmentSatisfaction`, `JobInvolvement`, and `RelationshipSatisfaction` to prevent alphabetical chart misordering.
+3. **Feature Binning**: Construct standardized cohort bins (`Age_Group`, `Tenure_Bracket`, `Distance_Bracket`, `Salary_Bracket`) in the prepared layer for intuitive dashboard filtering.
+4. **Binary Calculations**: Generate binary numeric flags (`Attrition_Numeric` = 1/0, `OverTime_Numeric` = 1/0) to accelerate DAX aggregations.

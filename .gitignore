@@ -1,0 +1,73 @@
+# Operating System Files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Internal Planning & Scratch Scripts (Excluded from public portfolio)
+scripts/
+PROJECT_PLAN.md
+*.scratch.*
+
+# Python Cache & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+
+# Power BI & Microsoft Office Temporary Files
+~$*.xlsx
+~$*.xls
+~$*.pptx
+~$*.docx
+~$*.pbix
+*.tmp
+AutoRecovery*
+*.pbit.backup
+
+# IDE & Editor Configurations
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*~
+
+# Logs and Diagnostics
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
